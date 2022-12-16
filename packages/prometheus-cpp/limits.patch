@@ -1,0 +1,11 @@
+diff --git a/core/src/histogram.cc b/core/src/histogram.cc
+index 8023529..888e23e 100644
+--- a/core/src/histogram.cc
++++ b/core/src/histogram.cc
+@@ -5,6 +5,7 @@
+ #include <iterator>
+ #include <numeric>
+ #include <ostream>
++#include <limits>
+ 
+ namespace prometheus {
