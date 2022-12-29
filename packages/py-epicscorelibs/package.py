@@ -17,5 +17,5 @@ class PyEpicscorelibs(PythonPackage):
     version("7.0.7.99.0.0", sha256="d08cd4b228d7087fd172b9b48d5ebc1c763b6c1fbda26369776d5b274f1c73b4")
 
     depends_on("py-setuptools", type="build")
-    depends_on("py-setuptools-dso", type=("build", "run"))
+    depends_on("py-setuptools-dso@2.0a1:", type=("build", "run"))
     depends_on("py-numpy", type=("build", "run"))

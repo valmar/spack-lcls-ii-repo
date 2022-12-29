@@ -15,4 +15,5 @@ class PrometheusCpp(CMakePackage):
     maintainers = ["valmar"]
 
     version("0.9.0", tag="v0.9.0", submodules=True)
+
     patch("limits.patch")

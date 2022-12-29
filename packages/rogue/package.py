@@ -16,15 +16,15 @@ class Rogue(CMakePackage):
 
     version("5.14.0", tag="v5.14.0")
 
-    depends_on("boost", type = ("build", "run"))
-    depends_on("libzmq", type = ("build", "run"))
-    depends_on("python", type = ("build", "run"))
+    depends_on("boost", type=("link", "run"))
+    depends_on("libzmq", type=("link", "run"))
+    depends_on("python", type=("link", "run"))
     depends_on("py-pyyaml", type = ("build", "run"))
     depends_on("py-parse", type = ("build", "run"))
     depends_on("py-click", type = ("build", "run"))
     depends_on("py-coverage", type = ("build", "run"))
     depends_on("py-codecov", type = ("build", "run"))
-    depends_on("py-pytest", type = ("build", "run"))
+    depends_on("py-pytest@3.6:", type = ("build", "run"))
     depends_on("py-pytest-cov", type = ("build", "run"))
     depends_on("py-sphinx", type = ("build", "run"))
     depends_on("py-sphinx-rtd-theme", type = ("build", "run"))
@@ -42,5 +42,5 @@ class Rogue(CMakePackage):
     depends_on("py-pydm", type = ("build", "run"))
 
     def cmake_args(self):
-        args = ["-DROGUE_INSTALL=system", "-DROGUE_DIR={0}".format(self.prefix)]
+        args = ["-DROGUE_INSTALL=system", "-DROGUE_DIR={0}".format(self.prefix), "-DCMAKE_BUILD_TYPE=RelWithDebInfo"]
         return args

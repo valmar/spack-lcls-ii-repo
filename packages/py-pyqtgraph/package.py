@@ -16,6 +16,7 @@ class PyPyqtgraph(PythonPackage):
 
     version("0.13.1", sha256="698f87f59db965727b33602a0b29058de21291d8b143dea878b50578aec0dc08")
 
+    depends_on("python@3.8:", type=("build", "run"))
     depends_on("py-setuptools", type="build")
     depends_on("py-pyqt5", type=("build", "run"))
-    depends_on("py-numpy", type=("build", "run"))
+    depends_on("py-numpy@1.20.0:", type=("build", "run"))

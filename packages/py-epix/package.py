@@ -7,7 +7,7 @@ from spack.package import *
 
 
 class PyEpix(PythonPackage):
-    """Eirmware for LCLS-II timetool devices."""
+    "LCLS-II epix firmware and software."""
 
     homepage = "https://github.com/slaclab/epix"
     url = "https://pswww.slac.stanford.edu/swdoc/tutorials/epix-0.0.3.tar.gz"

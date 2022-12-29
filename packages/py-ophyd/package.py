@@ -16,5 +16,5 @@ class PyOphyd(PythonPackage):
 
     version("1.7.0", sha256="e7ead46e8ead9bba7d2a2212d4883c98f41be5c83c855ac7026e867ac83609ca")
 
-    depends_on("py-setuptools", type="build")
-    depends_on("py-setuptools-scm", type="build")
+    depends_on("py-setuptools@45:", type="build")
+    depends_on("py-setuptools-scm@6.2:", type="build")

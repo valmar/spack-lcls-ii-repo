@@ -7,7 +7,7 @@ from spack.package import *
 
 
 class PyCameralinkGateway(PythonPackage):
-    """LCLS-II cameralink gateway  software and firmware."""
+    """LCLS-II cameralink gateway software and firmware."""
 
     homepage = "https://github.com/slaclab/lcls2-timetool"
 

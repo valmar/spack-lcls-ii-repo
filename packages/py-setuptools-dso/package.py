@@ -16,4 +16,5 @@ class PySetuptoolsDso(PythonPackage):
 
     version("2.6", sha256="d061c0bc2a9b9d784e42d6ef71c6cd5bf5e1b5c3ab2aa43e940ee687ea2c6e23")
 
+    depends_on("python@2.7:", type=("build", "run"))
     depends_on("py-setuptools", type="build")

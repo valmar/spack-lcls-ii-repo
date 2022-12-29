@@ -1,0 +1,56 @@
+diff --git a/setup.py b/setup.py
+index 82cca2a..4f6eb63 100644
+--- a/setup.py
++++ b/setup.py
+@@ -13,19 +13,23 @@ setup(
+         'epix_hr_single_10k.ePixAsics',
+         'epix_hr_single_10k.ePixFpga',
+         'epix_hr_single_10k.ePixViewer',
+-        'epix_hr_single_10k.XilinxKcu1500Pgp3',
+         'epix_hr_single_10k.surf',
++        'epix_hr_single_10k.surf.axi',
+         'epix_hr_single_10k.surf.devices',
++        'epix_hr_single_10k.surf.devices.amphenol',
+         'epix_hr_single_10k.surf.devices.analog_devices',
+         'epix_hr_single_10k.surf.devices.cypress',
+         'epix_hr_single_10k.surf.devices.intel',
+         'epix_hr_single_10k.surf.devices.linear',
++        'epix_hr_single_10k.surf.devices.maxim',
+         'epix_hr_single_10k.surf.devices.microchip',
+         'epix_hr_single_10k.surf.devices.micron',
+         'epix_hr_single_10k.surf.devices.nxp',
+         'epix_hr_single_10k.surf.devices.silabs',
+         'epix_hr_single_10k.surf.devices.ti',
+         'epix_hr_single_10k.surf.devices.transceivers',
++        'epix_hr_single_10k.surf.dsp',
++        'epix_hr_single_10k.surf.dsp.fixed',
+         'epix_hr_single_10k.surf.ethernet',
+         'epix_hr_single_10k.surf.ethernet.gige',
+         'epix_hr_single_10k.surf.ethernet.mac',
+@@ -36,12 +40,17 @@ setup(
+         'epix_hr_single_10k.surf.protocols',
+         'epix_hr_single_10k.surf.protocols.batcher',
+         'epix_hr_single_10k.surf.protocols.clink',
++        'epix_hr_single_10k.surf.protocols.htsp',
+         'epix_hr_single_10k.surf.protocols.i2c',
+         'epix_hr_single_10k.surf.protocols.jesd204b',
+         'epix_hr_single_10k.surf.protocols.pgp',
+         'epix_hr_single_10k.surf.protocols.rssi',
++        'epix_hr_single_10k.surf.protocols.sugoi',
+         'epix_hr_single_10k.surf.protocols.ssi',
++        'epix_hr_single_10k.surf.protocols.ssp',
+         'epix_hr_single_10k.surf.xilinx',
++        'epix_hr_single_10k.l2si_core',
++        'epix_hr_single_10k.epix_hr_core',
+     ],
+     package_dir = {
+         'epix_hr_single_10k': 'software/python',
+@@ -51,5 +60,8 @@ setup(
+         'epix_hr_single_10k.ePixFpga': 'software/python/ePixFpga',
+         'epix_hr_single_10k.ePixViewer': 'software/python/ePixViewer',
+         'epix_hr_single_10k.XilinxKcu1500Pgp3': 'software/python/XilinxKcu1500Pgp3',
++        'epix_hr_single_10k.LclsTimingCore': 'firmware/submodules/lcls-timing-core/python/LclsTimingCore',
++        'epix_hr_single_10k.l2si_core': 'firmware/submodules/l2si-core/python/l2si_core',
++        'epix_hr_single_10k.epix_hr_core': 'firmware/submodules/epix-hr-core/python/epix_hr_core',
+     }
+ )
