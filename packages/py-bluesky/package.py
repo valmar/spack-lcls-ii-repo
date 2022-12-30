@@ -16,6 +16,7 @@ class PyBluesky(PythonPackage):
 
     version("1.10.0", sha256="c66d3754bc1423419aae686d57f40d5a3f4c720976303e26714f4c4477032653")
 
+    depends_on("python@3.8:", type=("build", "run"))
     depends_on("py-setuptools", type="build")
     depends_on("py-cycler", type=("build", "run"))
     depends_on("py-event-model@1.14.0:", type=("build", "run"))

@@ -19,4 +19,4 @@ class PyPsmon(PythonPackage):
     depends_on("python@3.6:", type=("build", "run"))
     depends_on("py-poetry@0.12:", type="build")
     depends_on("py-psutil@5.5:6.0", type=("build", "run"))
-    depends_on("py-logurui@0.2.5:0.3", type=("build", "run"))
+    depends_on("py-loguru@0.2.5:0.3.0", type=("build", "run"))

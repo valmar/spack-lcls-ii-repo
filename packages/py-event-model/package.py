@@ -16,6 +16,7 @@ class PyEventModel(PythonPackage):
 
     version("1.19.1", sha256="c76ae7616148eb0f27fa77fab3a46790671ad97dd3bc5017130867090fb1b4e2")
 
+    depends_on("python@3.6:", type=("build", "run"))
     depends_on("py-setuptools", type="build")
     depends_on("py-jsonschema", type=("build", "run"))
     depends_on("py-numpy", type=("build", "run"))

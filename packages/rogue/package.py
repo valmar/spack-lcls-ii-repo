@@ -9,16 +9,16 @@ from spack.package import *
 class Rogue(CMakePackage):
     """SLAC Python Based Hardware Abstraction & Data Acquisition System."""
 
-    homepage = "https://github.com/slaclab/rogue"
-    git = "https://github.com/slaclab/rogue"
+    homepage = "https://www.example.com"
+    url = "https://github.com/slaclab/rogue/archive/refs/tags/v5.14.0.tar.gz"
 
     maintainers = ["valmar"]
 
-    version("5.14.0", tag="v5.14.0")
+    version("5.14.0", sha256="b0af5426e7f80f2949d929dc1bef79f8fcfeca234af799784502cd22120ccf12")
 
-    depends_on("boost", type=("link", "run"))
-    depends_on("libzmq", type=("link", "run"))
-    depends_on("python", type=("link", "run"))
+    depends_on("boost")
+    depends_on("libzmq")
+    depends_on("python")
     depends_on("py-pyyaml", type = ("build", "run"))
     depends_on("py-parse", type = ("build", "run"))
     depends_on("py-click", type = ("build", "run"))
@@ -42,5 +42,6 @@ class Rogue(CMakePackage):
     depends_on("py-pydm", type = ("build", "run"))
 
     def cmake_args(self):
-        args = ["-DROGUE_INSTALL=system", "-DROGUE_DIR={0}".format(self.prefix), "-DCMAKE_BUILD_TYPE=RelWithDebInfo"]
+        print("Version", self.version)
+        args = ["-DROGUE_INSTALL=system", "-DROGUE_DIR={0}".format(self.prefix), "-DCMAKE_BUILD_TYPE=RelWithDebInfo", "-DROGUE_VERSION=v{0}".format(self.version)]
         return args

@@ -16,6 +16,7 @@ class PyPanel(PythonPackage):
 
     version("0.14.2", sha256="c22690833dfa508d72ae632e2d42ea7d63ee2a31347e23b7ecf8dcded312ec74")
 
+    depends_on("python@3.7:", type=("build", "run"))
     depends_on("py-setuptools@42:", type="build")
     depends_on("node-js", type="build")
     depends_on("py-bokeh@2.4.3:2.5.0", type=("build", "run"))

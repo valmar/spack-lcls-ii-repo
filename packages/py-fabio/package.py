@@ -16,6 +16,7 @@ class PyFabio(PythonPackage):
 
     version("2022.12.1", sha256="668287dbb4c7c3042a404c80617bd6be9861a3ff50118a5a2b385f8a285f62bc")
 
+    depends_on("python@3.6:", type=("build", "run"))
     depends_on("py-setuptools", type="build")
     depends_on("meson", type=("build", "run"))
     depends_on("py-meson-python", type=("build", "run"))

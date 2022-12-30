@@ -16,6 +16,7 @@ class PyHdf5plugin(PythonPackage):
 
     version("4.0.1", sha256="b185fea987f582e3a51e7994cc07415664ac8be54dbad863d9f65a4fb5bd635c")
 
+    depends_on("python@3.7:", type=("build", "run"))
     depends_on("py-setuptools", type="build")
     depends_on("py-py-cpuinfo@8.0.0", type=("build", "run"))
     depends_on("py-sphinx", type=("build", "run"))
