@@ -42,6 +42,5 @@ class Rogue(CMakePackage):
     depends_on("py-pydm", type = ("build", "run"))
 
     def cmake_args(self):
-        print("Version", self.version)
         args = ["-DROGUE_INSTALL=system", "-DROGUE_DIR={0}".format(self.prefix), "-DCMAKE_BUILD_TYPE=RelWithDebInfo", "-DROGUE_VERSION=v{0}".format(self.version)]
         return args

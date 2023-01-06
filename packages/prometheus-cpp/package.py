@@ -17,3 +17,7 @@ class PrometheusCpp(CMakePackage):
     version("0.9.0", tag="v0.9.0", submodules=True)
 
     patch("limits.patch")
+
+    def cmake_args(self):
+        args = ["-DBUILD_SHARED_LIBS=ON", "-DENABLE_PUSH=ON", "-DENABLE_COMPRESSION=ON"]
+        return args
