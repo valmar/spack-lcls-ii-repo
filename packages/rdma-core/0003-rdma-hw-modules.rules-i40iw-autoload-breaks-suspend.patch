@@ -1,0 +1,31 @@
+From f68729e3c133bddf6fb175a38e128bb2ed338e7a Mon Sep 17 00:00:00 2001
+From: Jarod Wilson <jarod@redhat.com>
+Date: Tue, 5 Jun 2018 10:41:42 -0400
+Subject: [PATCH rdma-core 15/29] rdma-hw-modules.rules: i40iw autoload breaks
+ suspend
+
+Signed-off-by: Jarod Wilson <jarod@redhat.com>
+---
+ kernel-boot/rdma-hw-modules.rules | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/kernel-boot/rdma-hw-modules.rules b/kernel-boot/rdma-hw-modules.rules
+index dde0ab8d..64b9e115 100644
+--- a/kernel-boot/rdma-hw-modules.rules
++++ b/kernel-boot/rdma-hw-modules.rules
+@@ -11,7 +11,11 @@ ENV{ID_NET_DRIVER}=="bnxt_en", RUN{builtin}+="kmod load bnxt_re"
+ ENV{ID_NET_DRIVER}=="cxgb3", RUN{builtin}+="kmod load iw_cxgb3"
+ ENV{ID_NET_DRIVER}=="cxgb4", RUN{builtin}+="kmod load iw_cxgb4"
+ ENV{ID_NET_DRIVER}=="hns", RUN{builtin}+="kmod load hns_roce"
+-ENV{ID_NET_DRIVER}=="i40e", RUN{builtin}+="kmod load i40iw"
++# i40iw is not entirely suspend/resume friendly, and many systems with
++# i40e NICs aren't iwarp-capable, so Red Hat defaults to not auto-loading
++# the i40iw driver here to keep suspend/resume working. The i40iw driver
++# can still be loaded as needed by the rdma systemd service script.
++# ENV{ID_NET_DRIVER}=="i40e", RUN{builtin}+="kmod load i40iw"
+ ENV{ID_NET_DRIVER}=="mlx4_en", RUN{builtin}+="kmod load mlx4_ib"
+ ENV{ID_NET_DRIVER}=="mlx5_core", RUN{builtin}+="kmod load mlx5_ib"
+ ENV{ID_NET_DRIVER}=="qede", RUN{builtin}+="kmod load qedr"
+-- 
+2.16.1
+

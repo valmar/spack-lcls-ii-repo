@@ -1,0 +1,34 @@
+From 93ceaf5ddbb06d93eaa9dcc73a836528eeaf1bf9 Mon Sep 17 00:00:00 2001
+From: Jarod Wilson <jarod@redhat.com>
+Date: Tue, 5 Jun 2018 10:40:47 -0400
+Subject: [PATCH rdma-core 14/29] redhat/kernel-init: libi40iw no longer
+ tech-preview
+
+Signed-off-by: Jarod Wilson <jarod@redhat.com>
+---
+ redhat/rdma.kernel-init | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/redhat/rdma.kernel-init b/redhat/rdma.kernel-init
+index acce0066..9ed33541 100644
+--- a/redhat/rdma.kernel-init
++++ b/redhat/rdma.kernel-init
+@@ -137,11 +137,11 @@ load_hardware_modules()
+ 	load_modules usnic_verbs
+ 	RC+=$?
+     fi
++    if is_loaded i40e -a ! is_loaded i40iw; then
++	load_modules i40iw
++	RC+=$?
++    fi
+     if [ "${LOAD_TECH_PREVIEW_DRIVERS}" == "yes" ]; then
+-        if is_loaded i40e -a ! is_loaded i40iw; then
+-	    load_modules i40iw
+-	    RC+=$?
+-        fi
+         if is_loaded be2net -a ! is_loaded ocrdma; then
+ 	    load_modules ocrdma
+ 	    RC+=$?
+-- 
+2.16.1
+

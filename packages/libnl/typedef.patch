@@ -1,0 +1,12 @@
+diff --git a/include/linux-private/linux/rtnetlink.h b/include/linux-private/linux/rtnetlink.h
+index 3244947..9c2d89e 100644
+--- a/include/linux-private/linux/rtnetlink.h
++++ b/include/linux-private/linux/rtnetlink.h
+@@ -356,6 +356,7 @@ struct rtnexthop {
+ #define RTNH_DATA(rtnh)   ((struct rtattr*)(((char*)(rtnh)) + RTNH_LENGTH(0)))
+ 
+ /* RTA_VIA */
++typedef unsigned short __kernel_sa_family_t;
+ struct rtvia {
+ 	__kernel_sa_family_t	rtvia_family;
+ 	__u8			rtvia_addr[0];

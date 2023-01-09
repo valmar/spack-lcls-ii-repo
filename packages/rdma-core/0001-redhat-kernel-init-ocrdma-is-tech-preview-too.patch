@@ -1,0 +1,40 @@
+From 23a4645a0c390ab2bf8a08e15c8d220b27dcca5f Mon Sep 17 00:00:00 2001
+From: Jarod Wilson <jarod@redhat.com>
+Date: Tue, 5 Jun 2018 10:40:14 -0400
+Subject: [PATCH rdma-core 13/29] redhat/kernel-init: ocrdma is tech-preview
+ too
+
+Signed-off-by: Jarod Wilson <jarod@redhat.com>
+---
+ redhat/rdma.kernel-init | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/redhat/rdma.kernel-init b/redhat/rdma.kernel-init
+index 6f50e72f..acce0066 100644
+--- a/redhat/rdma.kernel-init
++++ b/redhat/rdma.kernel-init
+@@ -133,10 +133,6 @@ load_hardware_modules()
+ 	load_modules iw_cxgb4
+ 	RC+=$?
+     fi
+-    if is_loaded be2net -a ! is_loaded ocrdma; then
+-	load_modules ocrdma
+-	RC+=$?
+-    fi
+     if is_loaded enic -a ! is_loaded usnic_verbs; then
+ 	load_modules usnic_verbs
+ 	RC+=$?
+@@ -146,6 +142,10 @@ load_hardware_modules()
+ 	    load_modules i40iw
+ 	    RC+=$?
+         fi
++        if is_loaded be2net -a ! is_loaded ocrdma; then
++	    load_modules ocrdma
++	    RC+=$?
++        fi
+     fi
+     return $RC
+ }
+-- 
+2.16.1
+

@@ -1,0 +1,154 @@
+From f7882fef99e90bb2106f0458b407c7914bc87034 Mon Sep 17 00:00:00 2001
+From: Thomas Haller <thaller@redhat.com>
+Date: Wed, 30 Nov 2016 15:09:41 +0100
+Subject: [PATCH 1/1] lib: use MSG_PEEK by default for nl_recvmsgs()
+
+The MSG_PEEK API of recvmsg() should be avoid because it requires an additional
+syscall. But worse is to choose a too small buffer size and failing to receive
+the message.
+
+A user who is aware of the issue can avoid MSG_PEEK by either
+nl_socket_disable_msg_peek()/nl_socket_enable_msg_peek() or by setting
+a buffer size via nl_socket_set_msg_buf_size().
+
+By default however we now use MSG_PEEK. This is more important since commit
+90c6ebec9bd7a where the link dump request can be rather large.
+
+Signed-off-by: Thomas Haller <thaller@redhat.com>
+(cherry picked from commit 55ea6e6b6cd805f441b410971c9dd7575e783ef4)
+---
+ include/netlink-private/types.h |  3 ++-
+ include/netlink/utils.h         | 15 +++++++++++++++
+ lib/nl.c                        |  5 +++--
+ lib/socket.c                    | 20 +++++++++++++++++++-
+ lib/utils.c                     |  2 +-
+ 5 files changed, 40 insertions(+), 5 deletions(-)
+
+diff --git a/include/netlink-private/types.h b/include/netlink-private/types.h
+index 0f67ddd..f1467cc 100644
+--- a/include/netlink-private/types.h
++++ b/include/netlink-private/types.h
+@@ -27,7 +27,8 @@
+ #define NL_SOCK_PASSCRED	(1<<1)
+ #define NL_OWN_PORT		(1<<2)
+ #define NL_MSG_PEEK		(1<<3)
+-#define NL_NO_AUTO_ACK		(1<<4)
++#define NL_MSG_PEEK_EXPLICIT	(1<<4)
++#define NL_NO_AUTO_ACK		(1<<5)
+ 
+ #define NL_MSG_CRED_PRESENT 1
+ 
+diff --git a/include/netlink/utils.h b/include/netlink/utils.h
+index 1115bb4..2273835 100644
+--- a/include/netlink/utils.h
++++ b/include/netlink/utils.h
+@@ -224,6 +224,21 @@ enum {
+ 	NL_CAPABILITY_RTNL_ADDR_PEER_ID_FIX = 20,
+ #define NL_CAPABILITY_RTNL_ADDR_PEER_ID_FIX NL_CAPABILITY_RTNL_ADDR_PEER_ID_FIX
+ 
++	/* Older versions of libnl3 would not use MSG_PEEK for nl_recvmsgs() unless calling
++	 * nl_socket_enable_msg_peek(). Instead, the user had to specify the buffer size via
++	 * nl_socket_set_msg_buf_size(), which in turn would default to 4*getpagesize().
++	 *
++	 * The default value might not be large enough, so users who were not aware of the
++	 * problem easily ended up using a too small receive buffer. Usually, one wants to
++	 * avoid MSG_PEEK for recvmsg() because it requires an additional syscall.
++	 *
++	 * Now, as indicated by this capability, nl_recvmsgs() would use MSG_PEEK by default. The
++	 * user still can explicitly disable MSG_PEEK by calling nl_socket_disable_msg_peek() or
++	 * by setting the nl_socket_set_msg_buf_size() to a non-zero value.
++	 */
++	NL_CAPABILITY_NL_RECVMSGS_PEEK_BY_DEFAULT = 24,
++#define NL_CAPABILITY_NL_RECVMSGS_PEEK_BY_DEFAULT NL_CAPABILITY_NL_RECVMSGS_PEEK_BY_DEFAULT
++
+ 	__NL_CAPABILITY_MAX,
+ 	NL_CAPABILITY_MAX = (__NL_CAPABILITY_MAX - 1),
+ #define NL_CAPABILITY_MAX NL_CAPABILITY_MAX
+diff --git a/lib/nl.c b/lib/nl.c
+index 2d1ce81..8df08e6 100644
+--- a/lib/nl.c
++++ b/lib/nl.c
+@@ -676,7 +676,8 @@ int nl_recv(struct nl_sock *sk, struct sockaddr_nl *nla,
+ 	if (!buf || !nla)
+ 		return -NLE_INVAL;
+ 
+-	if (sk->s_flags & NL_MSG_PEEK)
++	if (   (sk->s_flags & NL_MSG_PEEK)
++	    || (!(sk->s_flags & NL_MSG_PEEK_EXPLICIT) && sk->s_bufsize == 0))
+ 		flags |= MSG_PEEK | MSG_TRUNC;
+ 
+ 	if (page_size == 0)
+@@ -742,7 +743,7 @@ retry:
+ 		void *tmp;
+ 
+ 		/* respond with error to an incomplete message */
+-		if (!(sk->s_flags & NL_MSG_PEEK)) {
++		if (flags == 0) {
+ 			retval = -NLE_MSG_TRUNC;
+ 			goto abort;
+ 		}
+diff --git a/lib/socket.c b/lib/socket.c
+index 109c416..99e1a1b 100644
+--- a/lib/socket.c
++++ b/lib/socket.c
+@@ -722,18 +722,23 @@ int nl_socket_set_nonblocking(const struct nl_sock *sk)
+ /**
+  * Enable use of MSG_PEEK when reading from socket
+  * @arg sk		Netlink socket.
++ *
++ * See also NL_CAPABILITY_NL_RECVMSGS_PEEK_BY_DEFAULT capability
+  */
+ void nl_socket_enable_msg_peek(struct nl_sock *sk)
+ {
+-	sk->s_flags |= NL_MSG_PEEK;
++	sk->s_flags |= (NL_MSG_PEEK | NL_MSG_PEEK_EXPLICIT);
+ }
+ 
+ /**
+  * Disable use of MSG_PEEK when reading from socket
+  * @arg sk		Netlink socket.
++ *
++ * See also NL_CAPABILITY_NL_RECVMSGS_PEEK_BY_DEFAULT capability
+  */
+ void nl_socket_disable_msg_peek(struct nl_sock *sk)
+ {
++	sk->s_flags |= NL_MSG_PEEK_EXPLICIT;
+ 	sk->s_flags &= ~NL_MSG_PEEK;
+ }
+ 
+@@ -853,6 +858,19 @@ int nl_socket_set_buffer_size(struct nl_sock *sk, int rxbuf, int txbuf)
+  * socket will be able to receive. It is generally recommneded to specify
+  * a buffer size no less than the size of a memory page.
+  *
++ * Setting the @bufsize to zero means to use a default of 4 times getpagesize().
++ *
++ * When MSG_PEEK is enabled, the buffer size is used for the initial choice
++ * of the buffer while peeking. It still makes sense to choose an optimal value
++ * to avoid realloc().
++ *
++ * When MSG_PEEK is disabled, the buffer size is important because a too small
++ * size will lead to failure of receiving the message via nl_recvmsgs().
++ *
++ * By default, MSG_PEEK is enabled unless the user calls either nl_socket_disable_msg_peek()/
++ * nl_socket_enable_msg_peek() or sets the message buffer size to a positive value.
++ * See capability NL_CAPABILITY_NL_RECVMSGS_PEEK_BY_DEFAULT for that.
++ *
+  * @return 0 on success or a negative error code.
+  */
+ int nl_socket_set_msg_buf_size(struct nl_sock *sk, size_t bufsize)
+diff --git a/lib/utils.c b/lib/utils.c
+index 0f2a252..d4c0413 100644
+--- a/lib/utils.c
++++ b/lib/utils.c
+@@ -1168,7 +1168,7 @@ int nl_has_capability (int capability)
+ 			0,
+ 			0,
+ 			0,
+-			0),
++			NL_CAPABILITY_NL_RECVMSGS_PEEK_BY_DEFAULT),
+ 		/* IMPORTANT: these capability numbers are intended to be universal and stable
+ 		 * for libnl3. Don't allocate new numbers on your own that differ from upstream
+ 		 * libnl3.
+-- 
+2.9.3
+

@@ -1,0 +1,23 @@
+commit ad6295aecbb1cd0ab9e026f951b24b9a7a59bd42
+Author: Jarod Wilson <jarod@redhat.com>
+Date:   Tue Jun 26 09:35:08 2018 -0400
+
+    Fix MTU limiting for IPoIB in datagram mode
+    
+    RHEL-only
+    
+    Signed-off-by: Jarod Wilson <jarod@redhat.com>
+
+diff --git a/redhat/rdma.ifup-ib b/redhat/rdma.ifup-ib
+index bb4d4f71..3779e13f 100644
+--- a/redhat/rdma.ifup-ib
++++ b/redhat/rdma.ifup-ib
+@@ -117,7 +117,7 @@ if [ -e /sys/class/net/${DEVICE}/mode ]; then
+         echo datagram > /sys/class/net/${DEVICE}/mode
+ 	# cap the MTU where we should based upon mode
+ 	[ -z "$MTU" ] && MTU=2044
+-	[ "$MTU" -gt 2044 ] && MTU=2044
++	[ "$MTU" -gt 4092 ] && MTU=4092
+     fi
+ fi
+ 
